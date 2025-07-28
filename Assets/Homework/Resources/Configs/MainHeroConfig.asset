@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3aaf8bec13875184a9b8cf29e196427a, type: 3}
+  m_Name: MainHeroConfig
+  m_EditorClassIdentifier: 
+  Prefab: {fileID: 21007558441430934, guid: efb0dfedc6536274697a66b6ba6ba87f, type: 3}
+  <MaxHealth>k__BackingField: 10
+  <MoveSpeed>k__BackingField: 5
+  <RotationSpeed>k__BackingField: 900
+  <TimeToSpawn>k__BackingField: 0.5
+  <Damage>k__BackingField: 1
