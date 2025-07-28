@@ -18,8 +18,6 @@ public class DirectionalProjectileGun : Gun
         _projectileSpeed = projectileSpeed;
         _projectile = projectile;
 
-        Debug.Log("Damage: " + _damage);
-
         _isInit = true;
     }
 

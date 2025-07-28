@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MainHeroConfig
   m_EditorClassIdentifier: 
   Prefab: {fileID: 21007558441430934, guid: efb0dfedc6536274697a66b6ba6ba87f, type: 3}
-  <MaxHealth>k__BackingField: 10
+  <MaxHealth>k__BackingField: 1
   <MoveSpeed>k__BackingField: 5
   <RotationSpeed>k__BackingField: 900
   <TimeToSpawn>k__BackingField: 0.5

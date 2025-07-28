@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class MovableView : MonoBehaviour
+public class MovableView : MonoBehaviour, IInitializable
 {
     private readonly int IsRunningKey = Animator.StringToHash("IsRunning");
 

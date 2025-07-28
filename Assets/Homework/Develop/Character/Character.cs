@@ -1,7 +1,8 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Character : MonoDestroyable, IDirectionalMovable, IDirectionalRotatable
+public class Character : MonoDestroyable, IDirectionalMovable, IDirectionalRotatable, IDamagable
 {
     private DirectionalMover _mover;
     private DirectionalRotator _rotator;
@@ -10,15 +11,11 @@ public class Character : MonoDestroyable, IDirectionalMovable, IDirectionalRotat
 
     protected bool IsInit = false;
 
-    [SerializeField] private Transform _cameraTarget;
-
     public Vector3 CurrentVelocity => _mover.CurrentVelocity;
 
     public Quaternion CurrentRotation => _rotator.CurrentRotation;
 
     public Vector3 Position => transform.position;
-
-    public Transform CameraTarget => _cameraTarget;
 
     public Health Health => _health;
 
@@ -50,4 +47,7 @@ public class Character : MonoDestroyable, IDirectionalMovable, IDirectionalRotat
     public void SetMoveDirection(Vector3 inputDirection) => _mover.SetInputDirection(inputDirection);
 
     public void SetRotationDirection(Vector3 inputDirection) => _rotator.SetInputDirection(inputDirection);
+
+    public void TakeDamage(float damage)
+        => _health.Reduce(damage);
 }

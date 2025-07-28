@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Health
 {
-    public event Action Changed;
+    public event Action Reduced;
+    public event Action Added;
 
     private float _maxValue;
 
@@ -29,7 +30,7 @@ public class Health
         _value = Mathf.Clamp(_value - reducedValue, 0, _maxValue);
 
 
-        Changed?.Invoke();
+        Reduced?.Invoke();
     }
 
     public void Add(float additiveValue)
@@ -42,6 +43,6 @@ public class Health
 
         _value = Mathf.Clamp(_value + additiveValue, 0, _maxValue);
 
-        Changed?.Invoke();
+        Added?.Invoke();
     }
 }

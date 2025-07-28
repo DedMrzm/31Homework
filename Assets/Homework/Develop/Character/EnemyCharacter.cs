@@ -1,18 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyCharacter : MonoBehaviour
+public class EnemyCharacter : Character
 {
-    // Start is called before the first frame update
-    void Start()
+    private float _damage;
+    private CounterService<EnemyCharacter> _counterService;
+
+    public void Initialize(float damage, CounterService<EnemyCharacter> counterService)
     {
-        
+        _damage = damage;
+        _counterService = counterService;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDestroy()
     {
-        
+        _counterService?.Remove(this);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        IDamagable damagable = collision.gameObject.GetComponent<IDamagable>();
+
+        if (collision.gameObject.GetComponent<IDamagable>() != null && collision.gameObject.CompareTag("MainHero"))
+        {
+            damagable.TakeDamage(_damage);
+        }
     }
 }

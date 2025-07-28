@@ -1,14 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Bootstrap : MonoBehaviour
 {
+    [SerializeField] private ConfirmPopup _confirmPopup;
+
+    private CounterService<EnemyCharacter> _counterService;
+
     private ControllersUpdateService _controllersUpdateService;
 
-    private MainHeroFactory _heroFactory;
+    private GameplayCycle _gameplayCycle;
 
     private void Awake()
     {
@@ -17,43 +22,51 @@ public class Bootstrap : MonoBehaviour
 
     private IEnumerator StartProcess()
     {
-        ControllersFactory controllersFactory = new ControllersFactory();
-        CharactersFactory charactersFactory = new CharactersFactory();
-
         MainHeroConfig heroConfig = Resources.Load<MainHeroConfig>("Configs/MainHeroConfig");
         LevelConfig levelConfig = Resources.Load<LevelConfig>("Configs/LevelConfig");
 
         _controllersUpdateService = new ControllersUpdateService();
 
+        CounterService<EnemyCharacter> counterService = new CounterService<EnemyCharacter>();
+
+        ControllersFactory controllersFactory = new ControllersFactory();
+        CharactersFactory charactersFactory = new CharactersFactory();
+
         MainHeroFactory mainHeroFactory = new MainHeroFactory(_controllersUpdateService, controllersFactory, charactersFactory);
-        EnemiesFactory enemiesFactory = new EnemiesFactory(_controllersUpdateService, controllersFactory, charactersFactory);
+        EnemiesFactory enemiesFactory = new EnemiesFactory(_controllersUpdateService, controllersFactory, charactersFactory, counterService);
 
 
-        //EnemiesSpawner enemiesSpawner = new EnemiesSpawner(enemiesFactory);
+        _counterService = counterService;
 
-        
-        mainHeroFactory.Create(heroConfig, levelConfig.MainHeroStartPosition);
+        List<Transform> spawnPoints = levelConfig.EnemiesSpawnPoints.GetComponentsInChildren<Transform>().ToList();
+        spawnPoints.Remove(spawnPoints[0]);
+        EnemiesSpawner enemiesSpawner = new EnemiesSpawner(enemiesFactory, counterService, this, spawnPoints);
 
-        //_gameplayCycle = new GameplayCycle(
-        //    mainHeroFactory,
-        //    heroConfig,
-        //    levelConfig,
-        //    _confirmPopup,
-        //    enemiesSpawner,
-        //    this);
+        _gameplayCycle = new GameplayCycle(
+            mainHeroFactory,
+            heroConfig,
+            _confirmPopup,
+            counterService,
+            levelConfig,
+            enemiesSpawner,
+            this);
 
-        //Сделать мейнхиро фектори
-        //В нём должна быть реализация создания всех необходимых классов, а также поиск гана в чилдрене и про его отсутсвии что-то сделать
+        yield return _gameplayCycle.Prepare();
 
+        yield return new WaitForSeconds(1.5f);
 
-        yield return new WaitForSeconds(1);
+        yield return _gameplayCycle.Launch();
+    }
 
-        SceneManager.LoadScene("Environment", LoadSceneMode.Additive);
-
+    private void OnDestroy()
+    {
+        _gameplayCycle?.Dispose();
     }
 
     private void Update()
     {
         _controllersUpdateService?.Update(Time.deltaTime);
+
+        _gameplayCycle?.Update(Time.deltaTime);
     }
 }

@@ -12,11 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7360016d5ad45324e82b56ffc3ddede2, type: 3}
   m_Name: LevelConfig
   m_EditorClassIdentifier: 
-  <DistanceTraveledToWin>k__BackingField: 1
-  <TimeToDefeat>k__BackingField: 1
+  <MainHeroStartPosition>k__BackingField: {x: 1, y: 0, z: 1}
+  <WinCondition>k__BackingField: 0
+  <TimeToSurviveForWin>k__BackingField: 5
+  <CountOfKillEnemiesForWin>k__BackingField: 2
+  <LoseCondition>k__BackingField: 1
+  <CountOfEnemiesForCaptureArena>k__BackingField: 4
   <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 0317743495e4e2440abb9a024667382a,
     type: 2}
-  <EnemiesCount>k__BackingField: 1
-  <EnemiesSpawnRange>k__BackingField: 1
-  <MainHeroStartPosition>k__BackingField: {x: 1, y: 0, z: 1}
-  <EnviromentSceneName>k__BackingField: 
+  <EnemiesSpawnCooldown>k__BackingField: 1
+  <EnemiesSpawnPoints>k__BackingField: {fileID: 7065418879982027831, guid: cc2845a719f914742840caeef8e9b315,
+    type: 3}

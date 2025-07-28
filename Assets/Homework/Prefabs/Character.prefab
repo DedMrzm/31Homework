@@ -576,6 +576,7 @@ GameObject:
   - component: {fileID: 6482037081752682498}
   - component: {fileID: 807457114118236275}
   - component: {fileID: 7312023372335549817}
+  - component: {fileID: 5950711060030582068}
   m_Layer: 0
   m_Name: CharacterView
   m_TagString: Untagged
@@ -634,6 +635,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 807457114118236275}
+--- !u!114 &5950711060030582068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4991143214617814070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e263acc749241c14b89cc7663be538d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 807457114118236275}
+  _hitParticles: {fileID: 0}
 --- !u!1 &5210012659592612265
 GameObject:
   m_ObjectHideFlags: 0
@@ -712,7 +727,7 @@ GameObject:
   - component: {fileID: 246576307581357520}
   m_Layer: 0
   m_Name: Character
-  m_TagString: Untagged
+  m_TagString: MainHero
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -747,6 +762,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 177d1dbb3f1259347b8d2cce2354325e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsTakeDamage: 0
   _cameraTarget: {fileID: 4323543113510410634}
 --- !u!54 &2015149064254513401
 Rigidbody:
@@ -794,10 +810,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1.5
+  m_Radius: 0.4086531
+  m_Height: 1.2875965
   m_Direction: 1
-  m_Center: {x: 0, y: 0.85, z: 0}
+  m_Center: {x: -0.0043070316, y: 0.8514625, z: 5.6954628e-18}
 --- !u!1 &5626063821534718346
 GameObject:
   m_ObjectHideFlags: 0

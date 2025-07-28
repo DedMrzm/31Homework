@@ -1,92 +1,99 @@
-//using System;
-//using System.Collections;
-//using UnityEngine;
-//using UnityEngine.SceneManagement;
+using System;
+using System.Collections;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
-//public class GameplayCycle : IDisposable
-//{
-//    private MainHeroFactory _mainHeroFactory;
+public class GameplayCycle : IDisposable
+{
+    private MainHeroFactory _mainHeroFactory;
 
-//    private MainHeroConfig _mainHeroConfig;
-//    private Character _mainHero;
+    private MainHeroConfig _mainHeroConfig;
+    private Character _mainHero;
 
-//    private LevelConfig _levelConfig;
+    private CounterService<EnemyCharacter> _counterService;
 
-//    //private ConfirmPopup _confirmPopup;
+    private ConfirmPopup _confirmPopup;
 
-//    //private EnemiesSpawner _enemiesSpawner;
+    private LevelConfig _levelConfig;
 
-//    private MonoBehaviour _context;
+    private EnemiesSpawner _enemiesSpawner;
 
-//    private GameMode _gameMode;
+    private MonoBehaviour _context;
 
-//    public GameplayCycle(
-//        MainHeroFactory mainHeroFactory,
-//        MainHeroConfig mainHeroConfig,
-//        LevelConfig levelConfig,
-//        //ConfirmPopup confirmPopup,
-//        //EnemiesSpawner enemiesSpawner,
-//        MonoBehaviour context)
-//    {
-//        _mainHeroFactory = mainHeroFactory;
-//        _mainHeroConfig = mainHeroConfig;
-//        _levelConfig = levelConfig;
-//        //_confirmPopup = confirmPopup;
-//        //_enemiesSpawner = enemiesSpawner;
-//        _context = context;
-//    }
+    private GameMode _gameMode;
 
-//    public IEnumerator Prepare()
-//    {
-//        yield return SceneManager.LoadSceneAsync(_levelConfig.EnviromentSceneName, LoadSceneMode.Additive);
+    public GameplayCycle(
+        MainHeroFactory mainHeroFactory,
+        MainHeroConfig mainHeroConfig,
+        ConfirmPopup confirmPopup,
+        CounterService<EnemyCharacter> enemiesCounter,
+        LevelConfig levelConfig,
+        EnemiesSpawner enemiesSpawner,
+        MonoBehaviour context)
+    {
+        _confirmPopup = confirmPopup;
+        _counterService = enemiesCounter;
+        _mainHeroFactory = mainHeroFactory;
+        _mainHeroConfig = mainHeroConfig;
+        _levelConfig = levelConfig;
+        _enemiesSpawner = enemiesSpawner;
+        _context = context;
+    }
 
-//        _mainHero = _mainHeroFactory.Create(_mainHeroConfig, _levelConfig.MainHeroStartPosition);
-//    }
+    public IEnumerator Prepare()
+    {
+        yield return SceneManager.LoadSceneAsync("Environment", LoadSceneMode.Additive);
 
-//    public IEnumerator Launch()
-//    {
-//        _confirmPopup.Show();
-//        _confirmPopup.ShowMessage($"Press {KeyCode.F.ToString()} for begin");
+    }
 
-//        yield return _confirmPopup.WaitConfirm(KeyCode.F);
+    public IEnumerator Launch()
+    {
+        _confirmPopup.Show();
+        _confirmPopup.ShowMessage($"Press {KeyCode.F.ToString()} for begin");
 
-//        _confirmPopup.Hide();
+        yield return _confirmPopup.WaitConfirm(KeyCode.F);
 
-//        _gameMode = new GameMode(_levelConfig, _mainHero, _enemiesSpawner);
+        if(_mainHero == null)
+            _mainHero = _mainHeroFactory.Create(_mainHeroConfig, _levelConfig.MainHeroStartPosition);
 
-//        _gameMode.Win += OnGameModeWin;
-//        _gameMode.Defeat += OnGameModeDefeat;
+        _confirmPopup.Hide();
 
-//        _gameMode.Start();
-//    }
+        _gameMode = new GameMode(_levelConfig, _mainHero, _enemiesSpawner);
+        _gameMode.Start();
 
-//    public void Update(float deltaTime) => _gameMode?.Update(deltaTime);
+        _gameMode.Win += OnGameModeWin;
+        _gameMode.Defeat += OnGameModeDefeat;
+    }
 
-//    private void OnGameModeEnded()
-//    {
-//        if (_gameMode != null)
-//        {
-//            _gameMode.Win -= OnGameModeWin;
-//            _gameMode.Defeat -= OnGameModeDefeat;
-//        }
-//    }
+    public void Update(float deltaTime) => _gameMode?.Update(deltaTime);
 
-//    public void Dispose()
-//    {
-//        OnGameModeEnded();
-//    }
+    private void OnGameModeEnded()
+    {
+        if (_gameMode != null)
+        {
+            _gameMode.Win -= OnGameModeWin;
+            _gameMode.Defeat -= OnGameModeDefeat;
+        }
+    }
 
-//    private void OnGameModeDefeat()
-//    {
-//        OnGameModeEnded();
-//        Debug.Log("Defeat");
-//        _context.StartCoroutine(Launch());
-//    }
+    public void Dispose()
+    {
+        OnGameModeEnded();
+    }
 
-//    private void OnGameModeWin()
-//    {
-//        OnGameModeEnded();
-//        Debug.Log("Win");
-//        SceneManager.LoadScene("Menu");
-//    }
-//}
+    private void OnGameModeDefeat()
+    {
+        OnGameModeEnded();
+        Debug.Log("Defeat");
+
+        _context.StartCoroutine(Launch());
+    }
+
+    private void OnGameModeWin()
+    {
+        OnGameModeEnded();
+        Debug.Log("Win");
+
+        _context.StartCoroutine(Launch());
+    }
+}
