@@ -1,3 +1,4 @@
+using Assets.Homework.Develop.Infrastructure;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,22 +20,25 @@ public class GameMode
 
     private EnemiesSpawner _enemiesSpawner;
 
+    private RulesManager _rulesManager;
+
     private bool _isRunning;
 
     public GameMode(
         LevelConfig levelConfig,
-        Character mainHero,
-        EnemiesSpawner enemiesSpawner)
+        CharacterWithGun mainHero,
+        EnemiesSpawner enemiesSpawner,
+        RulesManager rulesManager)
     {
         _levelConfig = levelConfig;
         _mainHero = mainHero;
         _enemiesSpawner = enemiesSpawner;
+
+        _rulesManager = rulesManager;
     }
 
     public void Start()
     {
-        //_currentTimeToDefeat = _levelConfig.TimeToDefeat;
-        //_currentDistanceTraveled = 0;
         _enemiesSpawner.CounterService.Restart();
 
         _mainSpawnProcess = _mainHero.StartCoroutine(_enemiesSpawner.SpawnProcess(_levelConfig.EnemyConfig));
@@ -47,19 +51,20 @@ public class GameMode
         if (_isRunning == false)
             return;
 
-        _timer += deltaTime;
+        _rulesManager.Update(deltaTime);
 
-        if (DefeatConditionCompleted())
+        if (_rulesManager.LoseConditionManager.LoseConditionCompleted())
         {
             ProcessDefeat();
             return;
         }
 
-        if (WinConditionCompleted())
+        if (_rulesManager.WinConditionManager.WinConditionCompleted())
         {
             ProcessWin();
             return;
         }
+
     }
 
     private void ProcessEndGame()
@@ -75,6 +80,7 @@ public class GameMode
 
     private void ProcessDefeat()
     {
+        Debug.Log("LOSE");
         ProcessEndGame();
         Defeat?.Invoke();
     }
@@ -86,41 +92,4 @@ public class GameMode
         Win?.Invoke();
     }
 
-    private bool WinConditionCompleted()
-    {
-        switch(_levelConfig.WinCondition)
-        {
-            case WinConditions.SurviveNSeconds:
-                if (_timer > _levelConfig.TimeToSurviveForWin)
-                {
-                    _timer = 0;
-                    return true;
-                }
-                break;
-            case WinConditions.KillNEnemies:
-                if(_enemiesSpawner.CounterService.RemovedCounter >= _levelConfig.CountOfKillEnemiesForWin)
-                {
-                    return true;
-                }
-                break;
-        }
-        return false;
-    }
-    private bool DefeatConditionCompleted()
-    {
-        switch (_levelConfig.LoseCondition)
-        {
-            case LoseConditions.CaptureArena:
-                if (_enemiesSpawner.CounterService.AddedCounter > _levelConfig.CountOfEnemiesForCaptureArena)
-                {
-                    return true;
-                }
-                break;
-            case LoseConditions.DeadHero:
-                if (_mainHero.Health.Value <= 0)
-                    return true;
-                break;
-        }
-        return false;
-    }
 }

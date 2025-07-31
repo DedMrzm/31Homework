@@ -1,3 +1,5 @@
+using Assets.Homework.Develop.Factories;
+using Assets.Homework.Develop.Infrastructure;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +31,7 @@ public class Bootstrap : MonoBehaviour
 
         CounterService<EnemyCharacter> counterService = new CounterService<EnemyCharacter>();
 
+
         ControllersFactory controllersFactory = new ControllersFactory();
         CharactersFactory charactersFactory = new CharactersFactory();
 
@@ -42,6 +45,8 @@ public class Bootstrap : MonoBehaviour
         spawnPoints.Remove(spawnPoints[0]);
         EnemiesSpawner enemiesSpawner = new EnemiesSpawner(enemiesFactory, counterService, this, spawnPoints);
 
+        GameModeFactory gameModeFactory = new GameModeFactory();
+
         _gameplayCycle = new GameplayCycle(
             mainHeroFactory,
             heroConfig,
@@ -49,7 +54,8 @@ public class Bootstrap : MonoBehaviour
             counterService,
             levelConfig,
             enemiesSpawner,
-            this);
+            this,
+            gameModeFactory);
 
         yield return _gameplayCycle.Prepare();
 

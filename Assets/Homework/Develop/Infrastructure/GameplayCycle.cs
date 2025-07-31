@@ -1,3 +1,5 @@
+using Assets.Homework.Develop.Factories;
+using Assets.Homework.Develop.Infrastructure;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -8,7 +10,7 @@ public class GameplayCycle : IDisposable
     private MainHeroFactory _mainHeroFactory;
 
     private MainHeroConfig _mainHeroConfig;
-    private Character _mainHero;
+    private CharacterWithGun _mainHero;
 
     private CounterService<EnemyCharacter> _counterService;
 
@@ -22,6 +24,8 @@ public class GameplayCycle : IDisposable
 
     private GameMode _gameMode;
 
+    private GameModeFactory _gameModeFactory;
+
     public GameplayCycle(
         MainHeroFactory mainHeroFactory,
         MainHeroConfig mainHeroConfig,
@@ -29,7 +33,8 @@ public class GameplayCycle : IDisposable
         CounterService<EnemyCharacter> enemiesCounter,
         LevelConfig levelConfig,
         EnemiesSpawner enemiesSpawner,
-        MonoBehaviour context)
+        MonoBehaviour context,
+        GameModeFactory gameModeFactory)
     {
         _confirmPopup = confirmPopup;
         _counterService = enemiesCounter;
@@ -38,12 +43,12 @@ public class GameplayCycle : IDisposable
         _levelConfig = levelConfig;
         _enemiesSpawner = enemiesSpawner;
         _context = context;
+        _gameModeFactory = gameModeFactory;
     }
 
     public IEnumerator Prepare()
     {
         yield return SceneManager.LoadSceneAsync("Environment", LoadSceneMode.Additive);
-
     }
 
     public IEnumerator Launch()
@@ -58,7 +63,7 @@ public class GameplayCycle : IDisposable
 
         _confirmPopup.Hide();
 
-        _gameMode = new GameMode(_levelConfig, _mainHero, _enemiesSpawner);
+        _gameMode = _gameModeFactory.CreateGameMode(_levelConfig, _mainHero, _counterService, _enemiesSpawner);
         _gameMode.Start();
 
         _gameMode.Win += OnGameModeWin;

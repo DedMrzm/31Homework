@@ -8,10 +8,10 @@ public class LevelConfig : ScriptableObject
 
     [field: SerializeField] public WinConditions WinCondition { get; private set; }
     [field: SerializeField] public float TimeToSurviveForWin { get; private set; }
-    [field: SerializeField] public float CountOfKillEnemiesForWin { get; private set; }
+    [field: SerializeField] public int CountOfKillEnemiesForWin { get; private set; }
 
     [field: SerializeField] public LoseConditions LoseCondition { get; private set; }
-    [field: SerializeField] public float CountOfEnemiesForCaptureArena { get; private set; }
+    [field: SerializeField] public int CountOfEnemiesForCaptureArena { get; private set; }
 
     [field: SerializeField] public EnemyConfig EnemyConfig { get; private set; }
     [field: SerializeField] public int EnemiesSpawnCooldown { get; private set; }
